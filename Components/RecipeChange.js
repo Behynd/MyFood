@@ -137,7 +137,7 @@ class RecipeChange extends Component {
                         this.props.route.params.onGoBack();
                         this.props.navigation.replace("Recipe", {settings: this.state.settings});
                         //this.props.navigation.navigate("Recipe", {settings: this.state.settings});
-                        // this.props.navigation.goBack();
+                        // this.props.navigation.goBack() ;
                     })
                 })
                 
