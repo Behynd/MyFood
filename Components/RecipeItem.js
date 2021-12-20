@@ -19,7 +19,7 @@ export const RecipeListItem = ({ item, settings, deleteRow, updateRow }) => {
     const [expanded, setExpanded] = useState(false);
 
     const renderIngredient = ({ item }) => (
-        <View style={[GlobalStyle.IngItem, {borderBottomWidth: 1, borderBottomColor: settings.FontColor, padding: 2}]}>
+        <View style={[GlobalStyle.IngItem, {marginTop: 5, borderBottomWidth: 1, borderBottomColor: settings.FontColor, padding: 2}]}>
             <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor}]}>{item.Name}</Text>
             <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor}]}>{item.Amount}</Text>
             <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor}]}>{item.Unit}</Text>
@@ -27,7 +27,7 @@ export const RecipeListItem = ({ item, settings, deleteRow, updateRow }) => {
     )
 
     const renderWorkstep = ({ item }) => (
-        <View style={[GlobalStyle.IngItem, {borderBottomWidth: 1, borderBottomColor: settings.FontColor, padding: 2}]}>
+        <View style={[GlobalStyle.IngItem, {marginTop: 5, borderBottomWidth: 1, borderBottomColor: settings.FontColor, padding: 2}]}>
             <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor}]}>{item.OrderNumber}</Text>
             <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor}]}>{item.Text}</Text>
             <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor}]}>{item.StepTime}</Text>
@@ -52,7 +52,7 @@ export const RecipeListItem = ({ item, settings, deleteRow, updateRow }) => {
             </TouchableOpacity> 
             {expanded && (
                 <View>
-                    <View style={[GlobalStyle.IngItem, {marginTop: 10, backgroundColor: AddOpacity(settings.AccentColor, 0.5)}]}>
+                    <View style={[GlobalStyle.IngItem, {padding: 5, backgroundColor: AddOpacity(settings.AccentColor, 0.5)}]}>
                         <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Schrittnummer</Text>
                         <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Schritt</Text>
                         <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Zeit</Text>
@@ -65,7 +65,7 @@ export const RecipeListItem = ({ item, settings, deleteRow, updateRow }) => {
                         listKey={(item, index) => `_key${index.toString()}`}
                         
                     />
-                    <View style={[GlobalStyle.IngItem, {marginTop: 10, backgroundColor: AddOpacity(settings.AccentColor, 0.5)}]}>
+                    <View style={[GlobalStyle.IngItem, {padding: 5,backgroundColor: AddOpacity(settings.AccentColor, 0.5)}]}>
                         <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Zutat</Text>
                         <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Menge</Text>
                         <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Einheit</Text>

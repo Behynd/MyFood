@@ -218,9 +218,12 @@ class Recipe extends Component {
                                 // recipeSheet.Step = recipeWorksteps;
                                  //var recipeIngredients = RecipeIngredients.filter(c => c.RecipeID == recipe.ID);
                                 recipeIngredients.forEach((recipeIng) => {
+                                    
                                     var ing = Ingredients.find(c => c.ID == recipeIng.IngredientID);
-                                    recipeIng.Name = ing.Name;
-                                    recipeIng.Unit = ing.Unit;
+                                    if (ing) {
+                                        recipeIng.Name = ing.Name;
+                                        recipeIng.Unit = ing.Unit;
+                                    }
                                 })
                                 // recipeSheet.Ing = recipeIngredients;
                                 Recipe.Ing = recipeIngredients;
@@ -281,7 +284,7 @@ class Recipe extends Component {
         }
 
         return (
-            <View style={[{height: '100%'}]}>
+            <View style={[{height: '100%', backgroundColor: this.settings.MainColor}]}>
                 <FlatList 
                     ref={list => {this.RecipeList = list }}
                     data={this.state.Recipes}

@@ -162,12 +162,14 @@ class RecipeChange extends Component {
                     buttonTextStyle={[{color: this.state.FontColor}]}
                     rowStyle={[GlobalStyle.PickerItem, {backgroundColor: this.state.MainColor}, {borderColor: this.state.FontColor}]}
                     rowTextStyle={[{color: this.state.FontColor}]}
-                    defaultValueByIndex={this.state.Recipe.Ing.length != 0 ? item.IngredientID  : 0}
                     defaultButtonText={this.state.Recipe.Ing.length != 0 && item.IngredientID ?  this.state.IngDS.find(c => c.ID == item.IngredientID).Name : 'Select Ingredient'}
                     onSelect={async(selectedItem, index) => {
-                        item.IngredientID = selectedItem.ID;
-                        item.Unit = this.state.IngDS.find(c => c.ID == selectedItem.ID).Unit;
-                        item.Name = this.state.IngDS.find(c => c.ID == selectedItem.ID).Name;
+                        var currentItems = this.state.Recipe.Ing;
+                        var currentItem = currentItems.findIndex(c => c.ID == item.ID);
+                        currentItems[currentItem].IngredientID = selectedItem.ID;
+                        currentItems[currentItem].Unit = this.state.IngDS.find(c => c.ID == selectedItem.ID).Unit;
+                        currentItems[currentItem].Name = this.state.IngDS.find(c => c.ID == selectedItem.ID).Name;
+                        this.setState({ refresh: !this.state.refresh });
                     }}
                     buttonTextAfterSelection={(selectedItem, index) => {
                         return selectedItem.Name
@@ -233,7 +235,7 @@ class RecipeChange extends Component {
                             style={[{backgroundColor: this.state.MainColor}]}
                             keyboardDismissMode='on-drag'
                         />  
-                        <TouchableOpacity onPress={async() => {  var NewStep = this.state.Recipe.Step; NewStep.push({ ID: NewStep.length == 0 ? 0 : ((Math.max.apply(Math, NewStep.map(function(o) { return o.ID; }))) + 1), Text: '', StepTime: 0}); await this.setState({ Recipe: { Step: NewStep }, refresh: !this.state.refresh});  }} style={[GlobalStyle.BtnSave,{backgroundColor: this.state.AccentColor, display: 'flex', flexDirection: 'row', justifyContent: 'center'}]} activeOpacity={0.3}>
+                        <TouchableOpacity onPress={async() => {  var NewStep = this.state.Recipe.Step; NewStep.push({ ID: NewStep.length == 0 ? 0 : ((Math.max.apply(Math, NewStep.map(function(o) { return o.ID; }))) + 1), Text: '', StepTime: 0}); await this.setState({ Recipe: { Info: this.state.Recipe.Info, Ing: this.state.Recipe.Ing, Step: NewStep }, refresh: !this.state.refresh});  }} style={[GlobalStyle.BtnSave,{backgroundColor: this.state.AccentColor, display: 'flex', flexDirection: 'row', justifyContent: 'center'}]} activeOpacity={0.3}>
                             <Feather name="plus" style={[{fontSize: 40}]} />
                         </TouchableOpacity>  
                     </View>
