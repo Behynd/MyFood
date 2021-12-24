@@ -28,7 +28,8 @@ import Ingredient from './Components/Ingredient';
 import Recipe from './Components/Recipe';
 import { RecipeTabs } from './Components/RecipeMask';
 import RecipeChange from './Components/RecipeChange';
-
+import Lang from './language';
+import Menu from './Components/Menu';
 
 var styles = StyleSheet.create({
   flexContainer: {
@@ -71,59 +72,64 @@ var styles = StyleSheet.create({
     marginRight: 20
   }
 });
-const Menu  = ({ navigation }) => {
-  const db = new DB();
+// const Menu  = ({ navigation }) => {
+//   const db = new DB();
  
-  const [settings, setSettings] = useState({ MainColor: '#F332', AccentColor: '#2d22'})
+//   const [settings, setSettings] = useState({ MainColor: '#F332', AccentColor: '#2d22'})
   
   
-  useEffect(() => {
-    Select(db, Tables.Settings).then((values) => {
-      if (values.length != 0){
-        setSettings({
-          MainColor: values[0].MainColor,
-          AccentColor: values[0].AccentColor,
-          FontColor: values[0].FontColor,
-          Language: values[0].Language
-        });
-      }
-      else {
-        Insert(db, Tables.Settings, { MainColor: '#FFFFFF', AccentColor: '#FFFFFF', FontColor: '#000000', Language: 'Deutsch'})
-        setSettings({
-          MainColor: '#FFFFFF',
-          AccentColor: '#FFFFFF',
-          FontColor: '#000000',
-          Language: 'Deutsch'
-        })
-      }
+//   useEffect(() => {
+//     Select(db, Tables.Settings).then((values) => {
+//       if (values.length != 0){
+//         setSettings({
+//           MainColor: values[0].MainColor,
+//           AccentColor: values[0].AccentColor,
+//           FontColor: values[0].FontColor,
+//           Language: values[0].Language
+//         });
+//         var lang = Lang(settings);
+//         if (lang){
+//           console.log(settings);
+//           navigation.setOptions({ headerTitle: lang.StackCaptionMenu });
+//         }
+//       }
+//       else {
+//         Insert(db, Tables.Settings, { MainColor: '#FFFFFF', AccentColor: '#FFFFFF', FontColor: '#000000', Language: 'Deutsch'})
+//         setSettings({
+//           MainColor: '#FFFFFF',
+//           AccentColor: '#FFFFFF',
+//           FontColor: '#000000',
+//           Language: 'Deutsch'
+//         })
+//       }
       
-    })  
+//     })  
     
-  }, [navigation])
+//   }, [navigation])
   
-  function SetBackground() {
+//   function SetBackground() {
     
-    Select(db, Tables.Settings).then((values) => {
-      setSettings({
-        MainColor: values[0].MainColor,
-        AccentColor: values[0].AccentColor,
-        FontColor: values[0].FontColor,
-        Language: values[0].Language
-      });
-    })  
-  } 
+//     Select(db, Tables.Settings).then((values) => {
+//       setSettings({
+//         MainColor: values[0].MainColor,
+//         AccentColor: values[0].AccentColor,
+//         FontColor: values[0].FontColor,
+//         Language: values[0].Language
+//       });
+//     })  
+//   } 
   
   
-  useEffect(() => {
-    navigation.setOptions({ headerRight: () => (
-      <TouchableOpacity onPress={() => { navigation.navigate('Settings', {settings: settings, update: {SetBackground}}) }} style={GlobalStyle.ToolbarItem} activeOpacity={0.5}>
-          <Image style={GlobalStyle.ToolbarItem}  resizeMode='stretch' source={require('./Resources/Settings.png')}></Image>
-      </TouchableOpacity>
+//   useEffect(() => {
+//     navigation.setOptions({ headerRight: () => (
+//       <TouchableOpacity onPress={() => { navigation.navigate('Settings', {settings: settings, update: {SetBackground}}) }} style={GlobalStyle.ToolbarItem} activeOpacity={0.5}>
+//           <Image style={GlobalStyle.ToolbarItem}  resizeMode='stretch' source={require('./Resources/Settings.png')}></Image>
+//       </TouchableOpacity>
       
-    )})
-    navigation.setOptions({ headerStyle: { backgroundColor: settings.AccentColor}})
-    navigation.setOptions({ headerTintColor: settings.FontColor })
-  })
+//     )})
+//     navigation.setOptions({ headerStyle: { backgroundColor: settings.AccentColor}})
+//     navigation.setOptions({ headerTintColor: settings.FontColor })
+//   })
     
     
     
@@ -133,28 +139,28 @@ const Menu  = ({ navigation }) => {
   
 
 
-  return (
-      <View style={[GlobalStyle.flexContainer, {backgroundColor: settings.MainColor}]}>
+//   return (
+//       <View style={[GlobalStyle.flexContainer, {backgroundColor: settings.MainColor}]}>
             
-            <View style={GlobalStyle.flexRow}>
-              <TouchableOpacity style={GlobalStyle.item} activeOpacity={0.5} onPress={() => { navigation.navigate('Ingredient', {settings: settings}); }}>
-                <Image style={GlobalStyle.image} resizeMode='stretch' source={require('./Resources/Ingredient.png')}></Image>
-              </TouchableOpacity>
-              <TouchableOpacity style={GlobalStyle.item} activeOpacity={0.5} onPress={() => { navigation.navigate('Recipe', {settings: settings}); }}>
-                <Image style={GlobalStyle.image} resizeMode='stretch' source={require('./Resources/Recipe.png')}></Image>
-              </TouchableOpacity>
-            </View>
-            <View style={GlobalStyle.flexRow}>
-              <TouchableOpacity style={GlobalStyle.item} activeOpacity={0.5}>
-                <Image style={GlobalStyle.image} resizeMode='stretch' source={require('./Resources/PurchaseList.png')}></Image>
-              </TouchableOpacity>
-              <TouchableOpacity style={GlobalStyle.item} activeOpacity={0.5}>
-                <Image style={GlobalStyle.image} resizeMode='stretch' source={require('./Resources/Schedule.png')}></Image>
-              </TouchableOpacity>
-            </View>
-          </View>
-  );
-}
+//             <View style={GlobalStyle.flexRow}>
+//               <TouchableOpacity style={GlobalStyle.item} activeOpacity={0.5} onPress={() => { navigation.navigate('Ingredient', {settings: settings}); }}>
+//                 <Image style={GlobalStyle.image} resizeMode='stretch' source={require('./Resources/Ingredient.png')}></Image>
+//               </TouchableOpacity>
+//               <TouchableOpacity style={GlobalStyle.item} activeOpacity={0.5} onPress={() => { navigation.navigate('Recipe', {settings: settings}); }}>
+//                 <Image style={GlobalStyle.image} resizeMode='stretch' source={require('./Resources/Recipe.png')}></Image>
+//               </TouchableOpacity>
+//             </View>
+//             <View style={GlobalStyle.flexRow}>
+//               <TouchableOpacity style={GlobalStyle.item} activeOpacity={0.5}>
+              <Image style={GlobalStyle.image} resizeMode='stretch' source={require('./Resources/PurchaseList.png')}></Image>
+//               </TouchableOpacity>
+//               <TouchableOpacity style={GlobalStyle.item} activeOpacity={0.5}>
+//                 <Image style={GlobalStyle.image} resizeMode='stretch' source={require('./Resources/Schedule.png')}></Image>
+//               </TouchableOpacity>
+//             </View>
+//           </View>
+//   );
+// }
 
 const App = () => {
   
@@ -162,9 +168,7 @@ const App = () => {
     'Non-serializable values were found in the navigation state',
   ]);
 
-  const refresh = () => {
-      console.log("test");
-  }
+  
 
   var db = DB();
   
@@ -221,14 +225,19 @@ const App = () => {
   
   const Stack = createStackNavigator();
 
+  const [settings, setSettings] = useState({})
+  
+  
+  
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen style={styles.Caption}
-          name="Menu"
+          name='Menu'
           component={Menu}
           options={({ navigation }) => ({
-            
+            headerTitle: 'Menü'
           })}       
         />
         <Stack.Screen 

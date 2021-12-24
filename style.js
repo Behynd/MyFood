@@ -23,11 +23,7 @@ export  const GlobalStyle = StyleSheet.create({
       height: 270,
       width: 200
     },
-    image: {
-      width: '100%',
-      height: '100%',
-      borderWidth: 3
-    },
+    
     ToolbarItem: {
       height: '100%',
       width: 65,
