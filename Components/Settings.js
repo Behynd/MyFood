@@ -4,7 +4,7 @@ import { ScrollView, View, Text } from 'react-native';
 import { GlobalStyle } from '../style';
 import { Tables, DB, CreateTable, Insert, Select, Delete, Update} from '../Database/db';
 import SelectDropdown from 'react-native-select-dropdown';
-
+import { Languages } from '../language';
 class Settings extends Component {
     
     constructor(props) {
@@ -19,12 +19,10 @@ class Settings extends Component {
         }
         props.navigation.setOptions({ headerStyle: { backgroundColor: this.state.AccentColor}})
         props.navigation.setOptions({ headerTintColor: this.state.FontColor })
-        this.Languages = ['Deutsch', 'English'];
+        this.Languages = Languages;
     }
     
-    componentDidMount() {
-       
-    }
+    
     
     OnAccentColorChanged = (color) => {
         Update(this.db, Tables.Settings, `AccentColor = '${color}'`)
@@ -35,10 +33,11 @@ class Settings extends Component {
             Language: this.state.Language
         });
         this.props.navigation.setOptions({ headerStyle: { backgroundColor: this.state.AccentColor}})
-        this.props.route.params.update.SetBackground();
+        this.props.route.params.update();
     }
 
     OnMainColorChanged = (color) => {
+        
         Update(this.db, Tables.Settings, `MainColor = '${color}'`)
         this.setState({
             MainColor: color,
@@ -46,7 +45,7 @@ class Settings extends Component {
             FontColor: this.state.FontColor,
             Language: this.state.Language
         });
-        this.props.route.params.update.SetBackground();
+        this.props.route.params.update();
     }
 
     OnFontColorChanged = (color) => {
@@ -57,9 +56,9 @@ class Settings extends Component {
             FontColor: color,
             Language: this.state.Language
         });
-        console.log(this.state);
+       
         this.props.navigation.setOptions({ headerTintColor: this.state.FontColor })
-        this.props.route.params.update.SetBackground();
+        this.props.route.params.update();
     }
 
     OnLanguageChanged = (value) => {
@@ -70,6 +69,7 @@ class Settings extends Component {
             FontColor: this.state.FontColor,
             Language: value
         });
+        this.props.route.params.update();
     }
 
     render() {
