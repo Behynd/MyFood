@@ -9,8 +9,9 @@ import Ingredient from './Ingredient';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Info, Ings, Steps } from './RecipeMask';
 import { NavigationContainer } from '@react-navigation/native';
+import Lang from '../language';
 
-export const RecipeListItem = ({ item, settings, deleteRow, updateRow }) => {
+export const RecipeListItem = ({ item, settings, lang,  deleteRow, updateRow }) => {
     
     const AddOpacity = (color , opacity) => {
         const _opacity = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
@@ -43,7 +44,7 @@ export const RecipeListItem = ({ item, settings, deleteRow, updateRow }) => {
                         <TouchableOpacity onPress={() => { deleteRow(item.Info.ID) }}>
                             <Feather name="trash-2" style={[{color: '#ff4d4d'}, {fontSize: 40}]}/>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[{marginLeft: 10}]} onPress={() => { updateRow({settings: settings, action: 'add', Recipe: item }) }}>
+                        <TouchableOpacity style={[{marginLeft: 10}]} onPress={() => { updateRow({settings: settings, lang: lang, action: 'update', Recipe: item }) }}>
                             <Feather name="edit" style={[{color: '#425fff'}, {fontSize: 40}]} />
                         </TouchableOpacity>
                     </View>
@@ -53,9 +54,9 @@ export const RecipeListItem = ({ item, settings, deleteRow, updateRow }) => {
             {expanded && (
                 <View>
                     <View style={[GlobalStyle.IngItem, {padding: 5, backgroundColor: AddOpacity(settings.AccentColor, 0.5)}]}>
-                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Schrittnummer</Text>
-                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Schritt</Text>
-                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Zeit</Text>
+                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>{lang.RecipeExpandStepNumber}</Text>
+                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>{lang.RecipeExpandStep}</Text>
+                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>{lang.RecipeExpandStepTime}</Text>
                     </View>
                     <FlatList 
                         
@@ -66,9 +67,9 @@ export const RecipeListItem = ({ item, settings, deleteRow, updateRow }) => {
                         
                     />
                     <View style={[GlobalStyle.IngItem, {padding: 5,backgroundColor: AddOpacity(settings.AccentColor, 0.5)}]}>
-                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Zutat</Text>
-                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Menge</Text>
-                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>Einheit</Text>
+                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>{lang.RecipeExpandIngredient}</Text>
+                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>{lang.RecipeExpandIngredientAmount}</Text>
+                        <Text style={[GlobalStyle.RecipeListPart,{color: settings.FontColor, fontWeight: '900', fontSize: 17}]}>{lang.RecipeExpandIngredientUnit}</Text>
                     </View> 
                     <FlatList 
                         listKey={(item, index) => `_key${index.toString()}`}

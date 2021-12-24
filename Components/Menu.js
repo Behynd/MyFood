@@ -29,6 +29,7 @@ class Menu extends Component {
            },
            refresh: false
         }
+        
     }
     componentDidMount() {
         this.setState({ refresh: !this.state.refresh });
@@ -46,7 +47,8 @@ class Menu extends Component {
                 });
                 var lang = Lang(this.state.settings);
                 this.setState({ Lang: lang });
-                
+                this.props.navigation.setOptions({ headerStyle: { backgroundColor: this.state.settings.AccentColor}});
+                this.props.navigation.setOptions({ headerTintColor: this.state.settings.FontColor })
                 this.props.navigation.setOptions({ headerTitle: lang.StackCaptionMenu });
             }
         })
@@ -80,12 +82,12 @@ class Menu extends Component {
         return (
             <View style={[{height: '100%', padding: 30, backgroundColor: this.state.settings.MainColor}]}>
                 <ScrollView>
-                <TouchableOpacity style={[{display: 'flex', flexDirection: 'row', height: '15%', minHeight: 100, padding: 10, backgroundColor: '#EEB336', borderRadius: 20, marginTop: 10}]}  onPress={() => { this.props.navigation.navigate('Ingredient', {settings: this.state.settings}); }}>
+                <TouchableOpacity style={[{display: 'flex', flexDirection: 'row', height: '15%', minHeight: 100, padding: 10, backgroundColor: '#EEB336', borderRadius: 20, marginTop: 10}]}  onPress={() => { this.props.navigation.navigate('Ingredient', {settings: this.state.settings, Lang: this.state.Lang }); }}>
                     <MaterialIcons name='local-restaurant' style={[{fontSize: 80}]} ></MaterialIcons>
                     <Text style={[{fontSize: 30, textAlignVertical: 'center', width: '65%', textAlign: 'center', color: this.state.settings.FontColor}]}>{this.state.Lang.StackCaptionIngredients}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[{display: 'flex', flexDirection: 'row', height: '15%', minHeight: 100, padding: 10, backgroundColor: '#3B8E30', borderRadius: 20, marginTop: 10}]}  onPress={() => { this.props.navigation.navigate('Recipe', {settings: this.state.settings}); }}>
+                <TouchableOpacity style={[{display: 'flex', flexDirection: 'row', height: '15%', minHeight: 100, padding: 10, backgroundColor: '#3B8E30', borderRadius: 20, marginTop: 10}]}  onPress={() => { this.props.navigation.navigate('Recipe', {settings: this.state.settings, Lang: this.state.Lang }); }}>
                     <MaterialIcons name='receipt' style={[{fontSize: 80}]} ></MaterialIcons>
                     <Text style={[{fontSize: 30, textAlignVertical: 'center', width: '65%', textAlign: 'center', color: this.state.settings.FontColor}]}>{this.state.Lang.StackCaptionRecipe}</Text>
                 </TouchableOpacity>

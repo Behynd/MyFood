@@ -130,26 +130,35 @@ class Recipe extends Component {
         
         
         
+        
         this.settings = props.route.params.settings;
+        this.Lang = props.route.params.Lang;
         this.getRecipeDataSource();
         props.navigation.setOptions({ headerStyle: { backgroundColor: this.settings.AccentColor}})
         props.navigation.setOptions({ headerTintColor: this.settings.FontColor })
+        props.navigation.setOptions({ headerTitle: this.Lang.StackCaptionRecipe })
     }
 
     componentDidUpdate() {
-       
-        var Recipe = this.props.route.params.Recipes;
-        var RecipeList = this.state.Recipes;
-        if (Recipe && !RecipeList.includes(Recipe, 0)) {
-            var list = this.state.Recipes;
-            list.push(this.props.route.params.Recipes);
-            delete this.props.route.params.Recipes;
-            this.setState({ Recipes: list });
-        }
         
+        var settings = this.props.route.params.settings;
+        var Recipe = this.props.route.params.Recipe;
+        if (Recipe) {
+            var RecipeList = this.state.Recipes;
+            var RecipeInList = RecipeList.find(c => c.Info.ID == Recipe.Info.ID);
+            if (RecipeInList) {
+                var removeIndex = RecipeList.map(c => c.Info.ID).indexOf(Recipe.Info.ID);
+                RecipeList.splice(removeIndex, 1);
+                RecipeList.push(Recipe);
+                delete this.props.route.params.Recipe;
+                this.setState({ Recipes: RecipeList, settings: settings });
+                
+            }
+            this.settings = settings;
+        }
     }
 
-    getDerived
+    
 
     SetAnimation() {
         LayoutAnimation.configureNext({
@@ -267,10 +276,6 @@ class Recipe extends Component {
 
     updateRow = (item) => {
         
-        item.action = 'update';
-        item.Recipe.Info = { ID: item.Recipe.ID, Name: item.Recipe.Name, PrepTime: item.Recipe.PrepTime };
-        item.Recipe.Ing = item.Recipe.RecipeIngredients;
-        item.Recipe.Step = item.Recipe.RecipeWorksteps;
         item.refresh = this.refreshList;
         this.props.navigation.navigate('RecipeMask', item);
     }
@@ -279,7 +284,7 @@ class Recipe extends Component {
         
         const renderRecipe = ({ item }) => {
             return (
-                <RecipeListItem item={item} settings={this.settings} deleteRow={this.deleteRecipe} updateRow={this.updateRow} />
+                <RecipeListItem item={item} settings={this.settings} lang={this.Lang} deleteRow={this.deleteRecipe} updateRow={this.updateRow} />
             )
         }
 
@@ -311,7 +316,7 @@ class Recipe extends Component {
                         </TouchableOpacity>
                     </View>
                 </Modal>
-                <TouchableOpacity onPress={() => { this.props.navigation.navigate('RecipeMask', {settings: this.settings, action: 'add', refresh: this.refreshList, Recipe: { Info: {Name: '', PrepTime: 0}, Ing: [{ ID: 0, Name: '', Unit: '', Amount: 0 }], Step: [{ ID: 0, Text: '', StepTime: 0, OrderNumber: 0 }] }}) }} style={[{backgroundColor: this.settings.AccentColor, display: 'flex', flexDirection: 'row', justifyContent: 'center'}]} activeOpacity={0.3}>
+                <TouchableOpacity onPress={() => { this.props.navigation.navigate('RecipeMask', {settings: this.settings, lang: this.Lang, action: 'add', refresh: this.refreshList, Recipe: { Info: {Name: '', PrepTime: null}, Ing: [{ ID: 0, Name: '', Unit: '', Amount: null }], Step: [{ ID: 0, Text: '', StepTime: null, OrderNumber: 0 }] }}) }} style={[{backgroundColor: this.settings.AccentColor, display: 'flex', flexDirection: 'row', justifyContent: 'center'}]} activeOpacity={0.3}>
                     <Feather name="plus" style={[{fontSize: 40}]} />
                 </TouchableOpacity>
             </View>

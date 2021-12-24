@@ -18,7 +18,7 @@ class RecipeChange extends Component {
         super(props);
         this.db = new DB();
         const settings = props.route.params.settings;
-        
+        this.Lang = props.route.params.lang;
         this.Callback = props.Callback;
         
         this.state = {
@@ -32,7 +32,10 @@ class RecipeChange extends Component {
             refresh: false,
             selectedView: 'Info'
         }
-
+        
+        this.props.navigation.setOptions({ headerStyle: { backgroundColor: this.state.AccentColor}});
+        this.props.navigation.setOptions({ headerTintColor: this.state.FontColor })
+        this.props.navigation.setOptions({ headerTitle: this.state.action == "add" ? this.Lang.StackCaptionRecipeAdd : this.Lang.StackCaptionRecipeUpdate });
         Select(this.db, Tables.Ingredients).then((Result) => {
             this.setState({ IngDS: Result});
         });
@@ -73,9 +76,7 @@ class RecipeChange extends Component {
         else {
             
             var RecipeDB = { Info: {}, Ings: [], Steps: [] };
-            var Recipe = this.state.Recipe;
-            
-            
+            var Recipe = JSON.parse(JSON.stringify(this.state.Recipe));
             
             Select(this.db, Tables.Recipe, `ID = ${Recipe.Info.ID}`).then((Reciper) => {
                 
@@ -89,12 +90,13 @@ class RecipeChange extends Component {
                     Select(this.db, Tables.RecipeWorksteps, `RecipeID = ${Reciper[0].ID}`).then((RecipeWorksteps) => {
                         RecipeDB.Steps = RecipeWorksteps;
                     }).then(() => {
-                        
+                       
                         if (Recipe.Info != RecipeDB.Info){
-                           
+                            
                             Update(this.db, Tables.Recipe, `Name = '${Recipe.Info.Name}', PrepTime = ${Recipe.Info.PrepTime}`, `ID = ${Recipe.Info.ID}`);
                         }
                         if (Recipe.Ing != RecipeDB.Ings){
+                            
                             RecipeDB.Ings.forEach((IngDB) => {                                                      //Jede aktuell zugeordnete Zutat durchlaufen
                                 var Ingr = Recipe.Ing.find(c => c.IngredientID == IngDB.IngredientID)   
                                 if (!Ingr){                                                                         //Wenn Der datenbankeintrag im State gefunden wurde
@@ -111,7 +113,9 @@ class RecipeChange extends Component {
                                 Insert(this.db, Tables.RecipeIngredients, { RecipeID: RecipeDB.Info.ID, IngredientID: Ings.IngredientID, Amount: Ings.Amount });
                             })
                         }
+                        
                         if (Recipe.Step != RecipeDB.Steps){
+                         
                             RecipeDB.Steps.forEach((StepDB) => {
                                 var Step = Recipe.Step.find(c => c.Text == StepDB.Text || c.StepTime == StepDB.StepTime);
                                 if (!Step){
@@ -133,11 +137,8 @@ class RecipeChange extends Component {
                         }
                         
                     }).then(() => {
-                       
-                        this.props.route.params.onGoBack();
-                        this.props.navigation.replace("Recipe", {settings: this.state.settings});
-                        //this.props.navigation.navigate("Recipe", {settings: this.state.settings});
-                        // this.props.navigation.goBack() ;
+                        
+                        this.props.navigation.navigate("Recipe", {settings: this.props.route.params.settings, Recipe: this.state.Recipe, Lang: this.Lang});
                     })
                 })
                 
@@ -162,7 +163,7 @@ class RecipeChange extends Component {
                     buttonTextStyle={[{color: this.state.FontColor}]}
                     rowStyle={[GlobalStyle.PickerItem, {backgroundColor: this.state.MainColor}, {borderColor: this.state.FontColor}]}
                     rowTextStyle={[{color: this.state.FontColor}]}
-                    defaultButtonText={this.state.Recipe.Ing.length != 0 && item.IngredientID ?  this.state.IngDS.find(c => c.ID == item.IngredientID).Name : 'Select Ingredient'}
+                    defaultButtonText={this.state.Recipe.Ing.length != 0 && item.IngredientID ?  this.state.IngDS.find(c => c.ID == item.IngredientID).Name : this.Lang.RecipeMaskIngredientSelect}
                     onSelect={async(selectedItem, index) => {
                         var currentItems = this.state.Recipe.Ing;
                         var currentItem = currentItems.findIndex(c => c.ID == item.ID);
@@ -178,7 +179,7 @@ class RecipeChange extends Component {
                         return item.Name
                     }}
                 />
-                <TextInput value={item.Amount.toString()} style={[GlobalStyle.IngAmountInput, {color: this.state.FontColor, backgroundColor: this.AddOpacity(this.state.AccentColor, 0.5), borderColor: this.state.FontColor}]} keyboardType='numeric' onChangeText={async(numb) => { item.Amount = numb; var Ing = this.state.Recipe.Ing.map(item => item.ID).indexOf(item.ID); var NewIngs = this.state.Recipe.Ing; NewIngs[Ing].Amount = numb; await this.setState({ Recipe: { Info: this.state.Recipe.Info, Ing: NewIngs, Step: this.state.Recipe.Step  } });  }} />
+                <TextInput placeholder={this.Lang.RecipeMaskIngredientAmount} placeholderTextColor={this.state.FontColor} style={[GlobalStyle.IngAmountInput, {color: this.state.FontColor, backgroundColor: this.AddOpacity(this.state.AccentColor, 0.5), borderColor: this.state.FontColor}]} keyboardType='numeric' onChangeText={async(numb) => { item.Amount = numb; var Ing = this.state.Recipe.Ing.map(item => item.ID).indexOf(item.ID); var NewIngs = this.state.Recipe.Ing; NewIngs[Ing].Amount = numb; await this.setState({ Recipe: { Info: this.state.Recipe.Info, Ing: NewIngs, Step: this.state.Recipe.Step  } });  }}>{item.Amount}</TextInput> 
                 <Text style={[GlobalStyle.UnitLabel, { color: this.state.FontColor}]}>{ item.Unit }</Text>
                 <TouchableOpacity style={GlobalStyle.IngDeleteButton} onPress={() => { var removeIndex = this.state.Recipe.Ing.map(item => item.ID).indexOf(item.ID); 
                                                     var NewIngs = this.state.Recipe.Ing; NewIngs.splice(removeIndex, 1); this.setState({ Recipe: { Info: this.state.Recipe.Info, Ing: NewIngs, Step: this.state.Recipe.Step} }); }}>
@@ -189,8 +190,8 @@ class RecipeChange extends Component {
 
         const renderWorkstep = ({ item }) => (
             <View style={[GlobalStyle.IngListItem, { backgroundColor: this.state.MainColor, padding: 5 }]}>
-                <TextInput value={item.Text} placeholderTextColor={this.state.FontColor} placeholder="Arbeitsschritt" multiline={true} style={[GlobalStyle.StepTextInput, {borderColor: this.state.FontColor, color: this.state.FontColor, paddingLeft: 15}]}  onChangeText={async(text) => { item.Text = text; var Step = this.state.Recipe.Step.map(item => item.ID).indexOf(item.ID); var NewSteps = this.state.Recipe.Step; NewSteps[Step].Text = text; await this.setState({ Recipe: { Info: this.state.Recipe.Info, Ing: this.state.Recipe.Ing, Step: NewSteps }}); }} />
-                <TextInput value={item.StepTime.toString()} placeholderTextColor={this.state.FontColor} placeholder="Zeit" keyboardType='numeric' style={[GlobalStyle.StepAmountInput, {borderColor: this.state.FontColor, color: this.state.FontColor, paddingLeft: 15}]} onChangeText={async(numb) => { item.Amount = numb; var Step = this.state.Recipe.Step.map(item => item.ID).indexOf(item.ID); var NewSteps = this.state.Recipe.Step; NewSteps[Step].StepTime = numb; await this.setState({ Recipe: { Info: this.state.Recipe.Info, Ing: this.state.Recipe.Ing, Step: NewSteps }, refresh: this.state.refresh}); }} /> 
+                <TextInput value={item.Text} placeholderTextColor={this.state.FontColor} placeholder={this.Lang.RecipeMaskWorkstepStep} multiline={true} style={[GlobalStyle.StepTextInput, {borderColor: this.state.FontColor, color: this.state.FontColor, paddingLeft: 15}]}  onChangeText={async(text) => { item.Text = text; var Step = this.state.Recipe.Step.map(item => item.ID).indexOf(item.ID); var NewSteps = this.state.Recipe.Step; NewSteps[Step].Text = text; await this.setState({ Recipe: { Info: this.state.Recipe.Info, Ing: this.state.Recipe.Ing, Step: NewSteps }}); }} />
+                <TextInput placeholderTextColor={this.state.FontColor} placeholder={this.Lang.RecipeMaskWorkstepStepTime} keyboardType='numeric' style={[GlobalStyle.StepAmountInput, {borderColor: this.state.FontColor, color: this.state.FontColor, paddingLeft: 15}]} onChangeText={async(numb) => { item.Amount = numb; var Step = this.state.Recipe.Step.map(item => item.ID).indexOf(item.ID); var NewSteps = this.state.Recipe.Step; NewSteps[Step].StepTime = numb; await this.setState({ Recipe: { Info: this.state.Recipe.Info, Ing: this.state.Recipe.Ing, Step: NewSteps }, refresh: this.state.refresh}); }}>{item.StepTime}</TextInput> 
                 <TouchableOpacity style={[GlobalStyle.StepDelete]} onPress={async() => { var removeIndex = this.state.Recipe.Step.map(item => item.ID).indexOf(item.ID);
                                                     var NewSteps = this.state.Recipe.Step; NewSteps.splice(removeIndex, 1); await this.setState({ Recipe: { Info: this.state.Recipe.Info, Ing: this.state.Recipe.Ing, Step: NewSteps }, refresh: this.state.refresh}); }}>
                     <Feather name="trash-2" style={[{color: '#ff4d4d'}, {fontSize: 40}]}/>
@@ -202,8 +203,8 @@ class RecipeChange extends Component {
             case 'Info':
                 return (
                     <View style={[GlobalStyle.RecipeInfo, {backgroundColor: this.state.MainColor}]}>
-                            <TextInput placeholderTextColor={this.state.FontColor} style={[GlobalStyle.RecipeInfoNameInput, {color: this.state.FontColor, borderColor: this.state.FontColor, backgroundColor: this.AddOpacity(this.state.AccentColor, 0.5)}]} onChangeText={async(text) => { await this.setState({ Recipe: { Info: { ID: this.state.Recipe.Info.ID, Name: text, PrepTime: this.state.Recipe.Info.PrepTime}, Ing: this.state.Recipe.Ing, Step: this.state.Recipe.Step}}); }} placeholder="Name">{this.state.Recipe.Info.Name}</TextInput>
-                            <TextInput placeholderTextColor={this.state.FontColor} style={[GlobalStyle.RecipeInfoTimeInput, {color: this.state.FontColor, borderColor: this.state.FontColor, backgroundColor: this.AddOpacity(this.state.AccentColor, 0.5)}]} keyboardType='numeric' onChangeText={async(numb) => {  numb != '' ? await this.setState({ Recipe: { Info: { ID: this.state.Recipe.Info.ID, PrepTime: parseInt(numb, 10), Name: this.state.Recipe.Info.Name }, Ing: this.state.Recipe.Ing, Step: this.state.Recipe.Step}}) :numb++ ;}} placeholder="Zeit">{this.state.Recipe.Info.PrepTime}</TextInput>
+                            <TextInput placeholderTextColor={this.state.FontColor} style={[GlobalStyle.RecipeInfoNameInput, {color: this.state.FontColor, borderColor: this.state.FontColor, backgroundColor: this.AddOpacity(this.state.AccentColor, 0.5)}]} onChangeText={async(text) => { await this.setState({ Recipe: { Info: { ID: this.state.Recipe.Info.ID, Name: text, PrepTime: this.state.Recipe.Info.PrepTime}, Ing: this.state.Recipe.Ing, Step: this.state.Recipe.Step}}); }} placeholder={this.Lang.RecipeMaskInfoName}>{this.state.Recipe.Info.Name}</TextInput>
+                            <TextInput placeholderTextColor={this.state.FontColor} style={[GlobalStyle.RecipeInfoTimeInput, {color: this.state.FontColor, borderColor: this.state.FontColor, backgroundColor: this.AddOpacity(this.state.AccentColor, 0.5)}]} keyboardType='numeric'  onChangeText={async(numb) => {  numb != '' ? await this.setState({ Recipe: { Info: { ID: this.state.Recipe.Info.ID, PrepTime: parseInt(numb, 10), Name: this.state.Recipe.Info.Name }, Ing: this.state.Recipe.Ing, Step: this.state.Recipe.Step}}) :numb++ ;}} placeholder={this.Lang.RecipeMaskInfoTime}>{this.state.Recipe.Info.PrepTime}</TextInput>
                             <TouchableOpacity onPress={() => { this.OnRecipeSave(); }} style={[GlobalStyle.BtnSave, {backgroundColor: this.state.AccentColor, display: 'flex', flexDirection: 'row', justifyContent: 'center'}]} activeOpacity={0.3}>
                                 <Feather name="save" style={[{fontSize: 40}]} />
                             </TouchableOpacity>

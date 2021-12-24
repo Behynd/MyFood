@@ -26,11 +26,13 @@ class Ingredient extends Component {
             this.setState({ Ingredients: values});
         });
         this.settings = props.route.params.settings;
+        this.Lang = props.route.params.Lang;
         this.state.borderColor = this.settings.FontColor;
         this.state.borderColorName = this.settings.AccentColor;
         this.state.borderColorUnit = this.settings.AccentColor;
         props.navigation.setOptions({ headerStyle: { backgroundColor: this.settings.AccentColor}})
         props.navigation.setOptions({ headerTintColor: this.settings.FontColor })
+        props.navigation.setOptions({ headerTitle: this.Lang.StackCaptionIngredients })
     }
 
     componentDidMount() {
@@ -144,7 +146,7 @@ class Ingredient extends Component {
                         visible={this.state.modalVisibleDelete}
                     >
                         <View style={[GlobalStyle.Popup, {backgroundColor: this.settings.AccentColor}]}>
-                            <Text style={[GlobalStyle.PopText, {color: this.settings.FontColor}]}>Delete this Item?</Text>
+                            <Text style={[GlobalStyle.PopText, {color: this.settings.FontColor}]}>{this.Lang.IngredientsDeleteModal}</Text>
                             <View style={GlobalStyle.FlexRow}>
                                 <TouchableOpacity onPress={() => { this.setState({ modalVisibleDelete: false, IngID: 0 }) }} style={[{backgroundColor: this.settings.MainColor}, {padding: 5}, {borderColor: this.settings.MainColor}, {borderWidth: 1}, {borderRadius: 10}]}   activeOpacity={0.5}>
                                     <Feather name="chevron-left"  style={[GlobalStyle.ModalButtons, {color: this.settings.FontColor}]} />
@@ -175,7 +177,7 @@ class Ingredient extends Component {
                                 ref={input => {this.IngName = input}} 
                                 value={this.state.IngName} 
                                 onChangeText={(name) => this.setState({ IngName: name }) } 
-                                placeholder="Name (e.g. Onion)" 
+                                placeholder={this.Lang.IngredientsAddUpdateName} 
                                 placeholderTextColor={this.settings.FontColor} 
                                 selectionColor={this.settings.FontColor} />
                                 
@@ -187,7 +189,7 @@ class Ingredient extends Component {
                                 ref={input => {this.IngUnit = input}} 
                                 value={this.state.IngUnit} 
                                 onChangeText={(unit) => this.setState({ IngUnit: unit }) } 
-                                placeholder="Einheit (e.g. gramm)" 
+                                placeholder={this.Lang.IngredientsAddUpdateUnit} 
                                 placeholderTextColor={this.settings.FontColor} 
                                 selectionColor={this.settings.FontColor} />
                             <View style={GlobalStyle.FlexRow}>
@@ -205,7 +207,7 @@ class Ingredient extends Component {
                     </Modal>
                     <TextInput 
                         style={[GlobalStyle.SearchBox,{backgroundColor: this.AddOpacity(this.settings.AccentColor, 0.5)}, {color: this.settings.FontColor}, {borderColor: this.state.borderColor}]}
-                        placeholder="Suche..."
+                        placeholder={this.Lang.IngredientsSearchBar}
                         placeholderTextColor={this.settings.FontColor}
                         clearButtonMode='always'
                         ref={input => { this.SearchBar = input }}
