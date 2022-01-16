@@ -33,7 +33,15 @@ function GetLabelsByLanguage(Setting) {
                 RecipeMaskIngredientSelect: 'Zutat auswählen',
                 RecipeMaskIngredientAmount: 'min',
                 RecipeMaskWorkstepStep: 'Arbeitsschritt',
-                RecipeMaskWorkstepStepTime: 'Zeit (in min)'
+                RecipeMaskWorkstepStepTime: 'Zeit (in min)',
+                TutorialLanguagePart: '',
+                TutorialMenuPart: 'Wilkommen zu {AppName}. In diesem Einstieg werden dir die wichtigsten Funktionen der App erklährt. Beginnen wir mit dem Zutaten Bereich',
+                TutorialIngredientPart: 'In diesem Bereich kannst du deine Zutaten welche du für alle Rezepte verwendest, verwalten. Beginne damit, eine Zutat anzulegen.',
+                TutorialIngredientAddPart: 'Hier gibt du den Name und die Einheit deiner Zutat an. Über den Haken mit dem Kreis bestätigst du deine Eingabe und schließt das Eingabefeld. Über den normalen Haken bestätigst du deine Eingabe, dass Popup beleibt jedoch für weitere Eingaben geöffnet. Über den Pfeil brichst du die Eingabe ab. Gib eine Zutat ein und bestätige mit dem Haken',
+                TutorialIngredientDeleteUpdatePart: 'Die Zutat ist nun in der Liste erschienen. Über die 2 rechten Knöpfe einer jeden Zutat lässt sich diese Löschen oder aktualisieren. Über die Suchfunktion kannst du nach einer gewissen Zutat per Name oder Einheit suchen. Kehre nun zum Hauptmenü zurück.',
+                TutorialRecipePart: 'In diesem Bereich kannst du deine Rezepte verwalten. Lege ein Rezept an.',
+                TutorialRecipeInfoPart: 'Hier stehen 3 Tabs zur auswahl. Info, Zutatsliste und Arbeitsschrittliste. Im Infotab gibst du den Name und die Dauer des Rezeptes an. Außerdem findet sich hier der Speichernknopf. Gehe nun in den nächsten Bereich',
+                TutorialRecipeIngredientPart: 'In dem Bereich gibst du alle Zutaten für dieses Rezept an. Ein Auswahlfeld für die zuvor angelegten Zutaten und ein Feld für die Menge sind gegeben. Über den Plus Knopf unten lassen sich weitere Einträge hinzufügen. '
             }
             
         case 'English': 

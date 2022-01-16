@@ -21,35 +21,48 @@ class Menu extends Component {
         this.state = {
            settings: {},
            Lang: {
-               StackCaptionMenu: 'dwd',
-               StackCaptionRecipe: 'dwd',
-               StackCaptionPurchaseList: 'dwd',
-               StackCaptionScheduler: 'dwd',
-               StackCaptionSettings: 'dwd'
+               StackCaptionMenu: '',
+               StackCaptionRecipe: '',
+               StackCaptionPurchaseList: '',
+               StackCaptionScheduler: '',
+               StackCaptionSettings: ''
            },
-           refresh: false
+           refresh: false,
+           tutorialModal: false,
+           tutorialSkipped: false,
+           tutorialMap: [
+               { content:  , buttons:  }
+            ]
         }
-        
+        Select(this.db, Tables.Settings).then((settings) => {
+            if (settings.length == 0)
+                this.setState({ tutorialModal: true });
+        });
     }
     componentDidMount() {
         this.setState({ refresh: !this.state.refresh });
     }
     componentDidUpdate() {
         Select(this.db, Tables.Settings).then((result) => {
-            if (result[0].MainColor != this.state.settings.MainColor ||
-                result[0].AccentColor != this.state.settings.AccentColor ||
-                result[0].FontColor != this.state.settings.FontColor  ||
-                result[0].Language != this.state.settings.Language) {
-                
-                
-                this.setState({ 
-                    settings: { MainColor: result[0].MainColor, AccentColor: result[0].AccentColor, FontColor: result[0].FontColor, Language: result[0].Language  }
-                });
-                var lang = Lang(this.state.settings);
-                this.setState({ Lang: lang });
-                this.props.navigation.setOptions({ headerStyle: { backgroundColor: this.state.settings.AccentColor}});
-                this.props.navigation.setOptions({ headerTintColor: this.state.settings.FontColor })
-                this.props.navigation.setOptions({ headerTitle: lang.StackCaptionMenu });
+            if (result.length != 0) {
+                if (result[0].MainColor != this.state.settings.MainColor ||
+                    result[0].AccentColor != this.state.settings.AccentColor ||
+                    result[0].FontColor != this.state.settings.FontColor  ||
+                    result[0].Language != this.state.settings.Language) {
+                    
+                    
+                    this.setState({ 
+                        settings: { MainColor: result[0].MainColor, AccentColor: result[0].AccentColor, FontColor: result[0].FontColor, Language: result[0].Language  }
+                    });
+                    var lang = Lang(this.state.settings);
+                    this.setState({ Lang: lang });
+                    this.props.navigation.setOptions({ headerStyle: { backgroundColor: this.state.settings.AccentColor}});
+                    this.props.navigation.setOptions({ headerTintColor: this.state.settings.FontColor })
+                    this.props.navigation.setOptions({ headerTitle: lang.StackCaptionMenu });
+                }
+            }
+            else if (!this.state.tutorialModal) {
+                this.setState({tutorialModal: true});
             }
         })
     }
@@ -82,6 +95,26 @@ class Menu extends Component {
         return (
             <View style={[{height: '100%', padding: 30, backgroundColor: this.state.settings.MainColor}]}>
                 <ScrollView>
+                <Modal
+                    animationType='fade'
+                    transparent={true}
+                    visible={this.state.tutorialModal && !this.state.tutorialSkipped}
+                    
+                >
+                    <View style={[GlobalStyle.Popup, {backgroundColor: "gray"}]}>
+                        <Text style={[{height: 300}]}>
+
+                        </Text>
+                        <View style={[{flexDirection: "row"}]}>
+                            <TouchableOpacity onPress={() => { this.setState({ tutorialSkipped: true }) }}    activeOpacity={0.5}>
+                                        <Text style={[{color: "blue"}]}>Skip Tutorial</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[{marginLeft: "auto"}]} onPress={() => {  }}    activeOpacity={0.5}>
+                                        <Text style={[{color: "blue"}]}>Go on</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
                 <TouchableOpacity style={[{display: 'flex', flexDirection: 'row', height: '15%', minHeight: 100, padding: 10, backgroundColor: '#EEB336', borderRadius: 20, marginTop: 10}]}  onPress={() => { this.props.navigation.navigate('Ingredient', {settings: this.state.settings, Lang: this.state.Lang }); }}>
                     <MaterialIcons name='local-restaurant' style={[{fontSize: 80}]} ></MaterialIcons>
                     <Text style={[{fontSize: 30, textAlignVertical: 'center', width: '65%', textAlign: 'center', color: this.state.settings.FontColor}]}>{this.state.Lang.StackCaptionIngredients}</Text>
